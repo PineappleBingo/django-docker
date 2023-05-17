@@ -1,16 +1,27 @@
 # ./django-docker/Dockerfile
-FROM python:3.7.5-buster
+FROM python:3.11-bullseye
 
 # set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-# Install & use pipenv
-COPY Pipfile Pipfile.lock ./
-RUN python -m pip install --upgrade pip
-RUN pip install pipenv && pipenv install --dev --system --deploy
-
 WORKDIR /app
+
+# Install & use pipenv
+COPY Pipfile requirements.txt ./
+RUN python3 -m pip install \
+    --trusted-host pypi.org --trusted-host files.pythonhosted.org \
+    --upgrade pip
+
+RUN pip3 install --trusted-host pypi.org --trusted-host files.pythonhosted.org \
+    pipenv \
+    && \
+    pipenv install -r requirements.txt
+# pipenv lock --pre && \
+#  --skip-lock
+# pipenv install --dev --system --deploy
+
+
 COPY . /app
 
 # # install dependencies
@@ -36,3 +47,14 @@ COPY . /app
 # RUN pip install -r requirements.txt
 # # copy project
 # COPY . /opt/app/
+
+
+# # Install & use pipenv
+# COPY Pipfile Pipfile.lock ./
+# RUN python3 -m pip install \
+#     --trusted-host pypi.org --trusted-host files.pythonhosted.org \
+#     --upgrade pip
+# RUN pip3 install --trusted-host pypi.org --trusted-host files.pythonhosted.org \
+#     pipenv \
+#     && \
+#     pipenv install --dev --system --deploy
