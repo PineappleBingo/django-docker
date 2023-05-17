@@ -7,3 +7,7 @@ docker-compose up --build
 ```bash 
 pipenv requirements > requirements.txt
 ```
+or
+```bash 
+pipenv requirements
+```
